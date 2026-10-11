@@ -83,7 +83,7 @@ varying float MdotU;
 varying float sunVisibility;
 varying float moonVisibility;
 
-uniform sampler2D gdepthtex;
+uniform sampler2D depthtex1;
 uniform sampler2D gcolor;
 uniform sampler2D gdepth;
 
@@ -1467,55 +1467,55 @@ if (ntc2.x < 1.0 && ntc2.y < 1.0 && ntc2.x > 0.0 && ntc2.y > 0.0){
 		
 			vec2 noisetc = ntc2 + deltatexcoord*getnoise(ntc2) + deltatexcoord;
 			
-			vec4 Samplee = textureGather(gdepthtex, noisetc);
+			vec4 Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex,noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 
-			Samplee = textureGather(gdepthtex, noisetc);
+			Samplee = textureGather(depthtex1, noisetc);
 			gr += dot(step(vec4(comp),Samplee),vec4(0.25))*cdist(noisetc);
 			noisetc += deltatexcoord;
 			
@@ -1530,7 +1530,7 @@ gr = 0.0;
 	for (int i = -6; i < 7;i++) {
 		for (int j = -6; j < 7 ;j++) {
 		vec2 ij = vec2(i,j);
-		vec4 temp = textureGather(gdepthtex,texcoord*2.0+lightPos + sign(ij)*sqrt(abs(ij))*vec2(0.006));
+		vec4 temp = textureGather(depthtex1,texcoord*2.0+lightPos + sign(ij)*sqrt(abs(ij))*vec2(0.006));
 		gr += dot(step(vec4(comp),temp),vec4(0.25));
 		}
 	}
