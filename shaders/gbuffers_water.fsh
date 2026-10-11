@@ -55,7 +55,7 @@ float waterH(vec3 posxz, float time) {
     
     // 1. Wave Scale and Speed
     // Lower scale = wider, smoother waves. Lower time = slower movement.
-    vec2 p = posxz.xz * 0.3; 
+    vec2 p = posxz.xz * 1.0; 
     float t = time * 1.2;    
     
     float wave = 0.0;
