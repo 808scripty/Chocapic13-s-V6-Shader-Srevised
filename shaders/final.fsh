@@ -396,8 +396,9 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
     vec3 curr = Uncharted2Tonemap(color*pow(eyeAdapt,0.88)*4.8);
 
     color = pow(curr/Uncharted2Tonemap(vec3(15.)),vec3(1.0/2.2));
+// --- DYNAMIC TIME-BASED COLOR TEMPERATURE ---
+    float tempIntensity = 1.7; // 0.0 = Off, 0.5 = Subtle, 1.0 = Default, 1.5 = Strong
 
-    // --- DYNAMIC TIME-BASED COLOR TEMPERATURE ---
     vec3 noonTint   = vec3(1.00, 1.00, 1.00); 
     vec3 sunsetTint = vec3(1.15, 0.95, 0.80); 
     vec3 nightTint  = vec3(0.85, 0.95, 1.15); 
@@ -410,11 +411,14 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
                        (nightTint * nightWeight) + 
                        (sunsetTint * sunsetWeight);
 
-    color = clamp(color * dynamicTint, 0.0, 1.5);
+    // Blend between neutral vec3(1.0) and dynamicTint based on intensity
+    vec3 finalTint = mix(vec3(1.0), dynamicTint, tempIntensity);
+
+    color = clamp(color * finalTint, 0.0, 1.0);
 
     // --- CINEMATIC COLOR GRADING PASS ---
     const float cineContrast   = 1.10;                  // S-curve contrast boost (>1.0 = punchier)
-    const float cineSaturation = 1.0;                  // Vibrance (>1.0 = more vibrant)
+    const float cineSaturation = 1.09;                  // Vibrance (>1.0 = more vibrant)
     const float filmBlackLift  = 0.015;                 // Faded film toe (lifts pure blacks slightly)
     vec3 shadowSplitTint       = vec3(0.94, 0.97, 1.05); // Cool teal/blue shadow tint
     vec3 highlightSplitTint    = vec3(1.05, 1.01, 0.95); // Warm gold/amber highlight tint
