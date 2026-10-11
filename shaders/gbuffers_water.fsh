@@ -127,7 +127,7 @@ void main() {
 	
 	vec4 albedo = texture2D(texture, texcoord.xy)*color;
 	albedo.rgb = pow(albedo.rgb,vec3(2.2));
-	if (iswater > 0.9) albedo.rgb = mix(albedo.rgb,vec3(0.35,0.67,0.72),0.8);
+	if (iswater > 0.9) albedo.rgb = mix(albedo.rgb,vec3(0.35,0.69,0.72),0.8);
 	vec3 colorrgb = albedo.rgb;
 	
 	vec4 fragposition = gbufferProjectionInverse*(vec4(gl_FragCoord.xy/vec2(viewWidth,viewHeight),gl_FragCoord.z,1.0)*2.0-1.0);
@@ -205,7 +205,7 @@ void main() {
 
 	
 	
-	float alpha = mix(albedo.a,0.11,max(iswater*2.0-1.0,0.0));
+	float alpha = mix(albedo.a,0.61,max(iswater*2.0-1.0,0.0));
 
 /* DRAWBUFFERS:02 */
 	gl_FragData[0] = vec4(fColor,alpha);
