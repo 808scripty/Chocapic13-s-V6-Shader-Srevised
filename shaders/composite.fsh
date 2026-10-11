@@ -1538,8 +1538,10 @@ gr = 0.0;
 
 }
 
-
-
+// Dim godrays if underwater
+if (isEyeInWater == 1) {
+    gr *= 0.3; // 0.3 means 30% brightness. Change this number to tune the intensity!
+}
 
 gl_FragData[0] = vec4(gr);
 }
