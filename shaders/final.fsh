@@ -410,7 +410,7 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
                        (nightTint * nightWeight) + 
                        (sunsetTint * sunsetWeight);
 
-    color = clamp(color * dynamicTint, 0.0, 1.0);
+    color = clamp(color * dynamicTint, 0.0, 1.5);
 
     // --- CINEMATIC COLOR GRADING PASS ---
     const float cineContrast   = 1.10;                  // S-curve contrast boost (>1.0 = punchier)
