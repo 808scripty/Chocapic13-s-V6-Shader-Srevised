@@ -220,23 +220,29 @@ vec3 Uncharted2Tonemap(vec3 x) {
 	/*--------------------------------*/
 	return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
 }
-float waterH(vec3 posxz,float time) {
-
-float wave = 0.0;
-
-
-
-const float amplitude = 0.2;
-
-vec4 waveXYZW = vec4(posxz.xz,posxz.xz)/vec4(250.,50.,-250.,-150.)+vec4(50.,250.,50.,-250.);
-vec2 fpxy = abs(fract(waveXYZW.xy*20.0)-0.5)*2.0;
-
-float d = amplitude*length(fpxy);
-
-wave = cos(waveXYZW.x*waveXYZW.y+time) + 0.5 * cos(2.0*waveXYZW.x*waveXYZW.y+time) + 0.25 * cos(4.0*waveXYZW.x*waveXYZW.y+time);
-
-return d*wave + d*(cos(waveXYZW.z*waveXYZW.w+time) + 0.5 * cos(2.0*waveXYZW.z*waveXYZW.w+time) + 0.25 * cos(4.0*waveXYZW.z*waveXYZW.w+time));
-
+float waterH(vec3 posxz, float time) {
+    // --- FAST PROCEDURAL WAVE (CALM) ---
+    
+    // 1. Wave Scale and Speed
+    // Lower scale = wider, smoother waves. Lower time = slower movement.
+    vec2 p = posxz.xz * 0.3; 
+    float t = time * 1.2;    
+    
+    float wave = 0.0;
+    
+    // 2. Layered Sine Waves (Approximating procedural noise)
+    // Layer 1: Base swells (large, slow)
+    wave += 0.500 * sin(p.x * 1.0 + p.y * 0.5 + t * 1.0);
+    
+    // Layer 2: Medium intersecting ripples (breaks up the pattern)
+    wave += 0.250 * sin(p.x * -1.5 + p.y * 2.0 + t * 1.4);
+    
+    // Layer 3: Fine surface details (small, slightly faster)
+    wave += 0.125 * sin(p.x * 2.8 - p.y * -3.1 + t * 1.8);
+    
+    // 3. Final Height Multiplier
+    // Keep this very low (like 0.02 to 0.04) for a calm, glassy look.
+    return wave * 0.025; 
 }
 
 float subSurfaceScattering(vec3 vec,vec3 pos, float N) {
