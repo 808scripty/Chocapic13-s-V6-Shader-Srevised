@@ -489,7 +489,7 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
 			gr += texture2DLod(gdepth, textCoord + 7.0 * deltaTextCoord,1).a;
 			
 	vec3 grC = lightColor*exposure;
-	color += grC*gr/7.*illuminationDecay*(1.0-isEyeInWater);
+	color += grC*gr/7.*illuminationDecay;
 }
 
 	float distr = distance(texcoord*vec2(aspectRatio,1.0),lightPos*vec2(aspectRatio,1.0));
