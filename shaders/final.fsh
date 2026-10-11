@@ -397,7 +397,7 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
 
     color = pow(curr/Uncharted2Tonemap(vec3(15.)),vec3(1.0/2.2));
 // --- DYNAMIC TIME-BASED COLOR TEMPERATURE ---
-    float tempIntensity = 1.7; // 0.0 = Off, 0.5 = Subtle, 1.0 = Default, 1.5 = Strong
+    float tempIntensity = 1.1; // 0.0 = Off, 0.5 = Subtle, 1.0 = Default, 1.5 = Strong
 
     vec3 noonTint   = vec3(1.00, 1.00, 1.00); 
     vec3 sunsetTint = vec3(1.15, 0.95, 0.80); 
