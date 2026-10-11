@@ -27,7 +27,7 @@ Read the terms of modification and sharing before changing something below pleas
 #define ENTITY_LAVASTILL     11.0
 
 
-#define SHADOW_MAP_BIAS 0.8
+#define SHADOW_MAP_BIAS 0.2
 const float PI = 3.1415927;
 out vec4 texcoord;
 
