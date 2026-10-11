@@ -205,7 +205,7 @@ void main() {
 
 	
 	
-	float alpha = mix(albedo.a,0.61,max(iswater*2.0-1.0,0.0));
+	float alpha = mix(albedo.a,0.21,max(iswater*2.0-1.0,0.0));
 
 /* DRAWBUFFERS:02 */
 	gl_FragData[0] = vec4(fColor,alpha);
