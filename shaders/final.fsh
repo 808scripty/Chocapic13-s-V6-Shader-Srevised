@@ -414,7 +414,7 @@ else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpo
 
     // --- CINEMATIC COLOR GRADING PASS ---
     const float cineContrast   = 1.10;                  // S-curve contrast boost (>1.0 = punchier)
-    const float cineSaturation = 1.15;                  // Vibrance (>1.0 = more vibrant)
+    const float cineSaturation = 1.0;                  // Vibrance (>1.0 = more vibrant)
     const float filmBlackLift  = 0.015;                 // Faded film toe (lifts pure blacks slightly)
     vec3 shadowSplitTint       = vec3(0.94, 0.97, 1.05); // Cool teal/blue shadow tint
     vec3 highlightSplitTint    = vec3(1.05, 1.01, 0.95); // Warm gold/amber highlight tint
