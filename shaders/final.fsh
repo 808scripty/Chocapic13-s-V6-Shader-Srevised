@@ -144,14 +144,21 @@ return max(h/10.,6.0);
 }
 
 float FogF(vec3 fposition) {
-    float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
-    float density = 600./1.6*(1.0-rainStrength*0.5);
+	float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
+	float density = 600./1.6*(1.0-rainStrength*0.5);
 
-    vec3 worldpos = (gbufferModelViewInverse*vec4(fposition,1.0)).rgb+cameraPosition;
-    float height = mix(getAirDensity (worldpos.y),6.,rainStrength);
-    float d = length(fposition);
+	vec3 worldpos = (gbufferModelViewInverse*vec4(fposition,1.0)).rgb+cameraPosition;
+	float height = mix(getAirDensity (worldpos.y),6.,rainStrength);
+	float d = length(fposition);
 
-    return pow(clamp((2.625+rainStrength*3.4)/exp(-60/10./density)*exp(-getAirDensity (cameraPosition.y)/density) * (1.0-exp( -pow(d,2.712)*height/density/(6000.-tmult*tmult*2000.)/13))/height,0.0,1.),1.0-rainStrength*0.63)*clamp((eyeBrightnessSmooth.y/255.-2/16.)*4.,0.0,1.0);
+	// Original atmospheric height fog
+	float baseFog = pow(clamp((2.625+rainStrength*3.4)/exp(-60/10./density)*exp(-getAirDensity (cameraPosition.y)/density) * (1.0-exp( -pow(d,2.712)*height/density/(6000.-tmult*tmult*2000.)/13))/height,0.0,1.),1.0-rainStrength*0.63)*clamp((eyeBrightnessSmooth.y/255.-2/16.)*4.,0.0,1.0);
+
+	// SEAMLESS HORIZON FADE:
+	// Smoothly ramps fog to 1.0 between 70% and 98% of the render distance 'far'
+	float distFade = smoothstep(far * 0.70, far * 0.98, d);
+
+	return clamp(max(baseFog, distFade), 0.0, 1.0);
 }
 
     float distratio(vec2 pos, vec2 pos2) {
@@ -334,12 +341,18 @@ vec3 color = albedo.xyz;
     }
     
 if (land){
-float fog = FogF(fragpos.xyz);
-float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
-vec3 fogC = getSkyColor(normalize(fragpos.xyz))*1.7*(0.7+0.3*tmult)*(1.33-rainStrength*0.8);
+	float fog = FogF(fragpos.xyz);
+	float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
 
-if (isEyeInWater < 0.9)color = mix(color,fogC,fog);
-else color = mix(color*0.4,vec3(0.25,0.5,0.72)*rawAvg*0.07,1.-exp(-length(fragpos.xyz)/40));
+	// Match fog color with atmosphere sky color at the horizon direction
+	vec3 skyDir = normalize(fragpos.xyz);
+	vec3 fogC = getSkyColor(skyDir) * 1.7 * (0.7 + 0.3 * tmult) * (1.33 - rainStrength * 0.8);
+
+	if (isEyeInWater < 0.9) {
+		color = mix(color, fogC, fog);
+	} else {
+		color = mix(color * 0.4, vec3(0.25, 0.5, 0.72) * rawAvg * 0.07, 1.0 - exp(-length(fragpos.xyz) / 40.0));
+	}
 }
     if (rainStrength > 0.01){
     vec4 rain = texture2D(composite,texcoord);
