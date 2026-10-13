@@ -341,18 +341,22 @@ vec3 color = albedo.xyz;
     }
     
 if (land){
-	float fog = FogF(fragpos.xyz);
-	float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
+    float fog = FogF(fragpos.xyz);
+    
+    // FORCE 100% FOG AT CHUNK EDGE:
+    // This smoothly ramps the fog to exactly 1.0 between 75% and 95% of your render distance.
+    float edgeFog = smoothstep(far * 0.75, far * 0.95, length(fragpos.xyz));
+    fog = clamp(max(fog, edgeFog), 0.0, 1.0);
 
-	// Match fog color with atmosphere sky color at the horizon direction
-	vec3 skyDir = normalize(fragpos.xyz);
-	vec3 fogC = getSkyColor(skyDir) * 1.7 * (0.7 + 0.3 * tmult) * (1.33 - rainStrength * 0.8);
+    float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
+    vec3 skyDir = normalize(fragpos.xyz);
+    vec3 fogC = getSkyColor(skyDir) * 1.7 * (0.7 + 0.3 * tmult) * (1.33 - rainStrength * 0.8);
 
-	if (isEyeInWater < 0.9) {
-		color = mix(color, fogC, fog);
-	} else {
-		color = mix(color * 0.4, vec3(0.25, 0.5, 0.72) * rawAvg * 0.07, 1.0 - exp(-length(fragpos.xyz) / 40.0));
-	}
+    if (isEyeInWater < 0.9) {
+        color = mix(color, fogC, fog);
+    } else {
+        color = mix(color * 0.4, vec3(0.25, 0.5, 0.72) * rawAvg * 0.07, 1.0 - exp(-length(fragpos.xyz) / 40.0));
+    }
 }
     if (rainStrength > 0.01){
     vec4 rain = texture2D(composite,texcoord);
