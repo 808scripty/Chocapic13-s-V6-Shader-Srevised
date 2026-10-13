@@ -88,7 +88,7 @@ const float mulfov = 1.0;
 	if (max(abs(worldposition.x),abs(worldposition.y)) < 1.0) {
 
 			float diffthresh = sunlightMat.a > 0.9? 0.0004 : distortFactor*distortFactor*(0.008*tan(acos(max(diffuse,0.0))) + 0.001)*0.225;
-			const float halfres = (0.25/shadowMapResolution);
+			const float halfres = (0.75/shadowMapResolution);
 			float offset = halfres;
 			
 			worldposition = worldposition * vec4(0.5,0.5,0.2,0.5) + vec4(0.5,0.5,0.5-diffthresh,0.5);
