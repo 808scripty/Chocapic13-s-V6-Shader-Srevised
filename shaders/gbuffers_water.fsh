@@ -72,7 +72,7 @@ float waterH(vec3 posxz, float time) {
     
     // 3. Final Height Multiplier
     // Keep this very low (like 0.02 to 0.04) for a calm, glassy look.
-    return wave * 0.15; 
+    return wave * 0.75; 
 }
 /*
 float waterH(vec3 posxz,float time) {
