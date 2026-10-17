@@ -343,17 +343,10 @@ vec3 color = albedo.xyz;
 if (land){
     float fog = FogF(fragpos.xyz);
     
-    // COMPLEMENTARY-STYLE CHUNK FADE:
-    // Uses primarily XZ (horizontal) distance to match chunk loading borders, 
-    // blended with standard distance for vertical height limits.
-    float distXZ = length(fragpos.xz);
-    float chunkDist = max(distXZ, length(fragpos.xyz) * 0.85); 
-    
-    // Smoothly ramps the fog to 1.0 starting at 65% of the render distance
-    float chunkFade = smoothstep(far * 0.65, far * 0.90, chunkDist);
-    
-    // Combine base atmospheric fog with the chunk border fade
-    fog = clamp(max(fog, chunkFade), 0.0, 1.0);
+    // FORCE 100% FOG AT CHUNK EDGE:
+    // This smoothly ramps the fog to exactly 1.0 between 75% and 95% of your render distance.
+    float edgeFog = smoothstep(far * 0.75, far * 0.95, length(fragpos.xyz));
+    fog = clamp(max(fog, edgeFog), 0.0, 1.0);
 
     float tmult = mix(min(abs(worldTime-6000.0)/6000.0,1.0),1.0,rainStrength);
     vec3 skyDir = normalize(fragpos.xyz);
