@@ -339,7 +339,7 @@ vec3 color = albedo.xyz;
 
         color = mix(color,reflection.rgb,fresnel);
     }
-
+//odj
 if (land){
     float fog = FogF(fragpos.xyz);
     
