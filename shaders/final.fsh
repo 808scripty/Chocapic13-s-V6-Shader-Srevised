@@ -276,53 +276,6 @@ vec3 decode (vec2 enc)
     return n;
 }
 
-
-// ---------------- GROUND FOG (sunrise / sunset only) ----------------
-#define GROUND_FOG
-#define GROUNDFOG_DENSITY    0.02   // thickness at ground level (0.01 = light mist, 0.05 = heavy)
-#define GROUNDFOG_BASE       62.0   // world Y where the fog is thickest (sea level is 62-63)
-#define GROUNDFOG_FALLOFF    0.12   // higher = thinner layer hugging the ground, lower = taller fog
-#define GROUNDFOG_BRIGHTNESS 1.0
-#define GROUNDFOG_WARMTINT   vec3(1.15, 0.95, 0.80) // sunrise/sunset color cast
-
-// 1.0 around sunrise (worldTime ~0) and sunset (~12500), 0.0 midday/night
-float groundFogTime() {
-    float t = float(worldTime);
-    float dRise = min(t, 24000.0 - t);     // distance to sunrise (handles the 24000 -> 0 wrap)
-    float dSet  = abs(t - 12500.0);        // distance to sunset
-    float d = min(dRise, dSet);
-    return 1.0 - smoothstep(1500.0, 4000.0, d);  // full strength within 1500 ticks, gone by 4000
-}
-
-vec3 applyGroundFog(vec3 col, vec3 fposView, vec3 fogC) {
-    float w = groundFogTime();
-    if (w < 0.001) return col;
-
-    // view-space position -> world-space offset (rotation only)
-    vec3 wv = (gbufferModelViewInverse * vec4(fposView, 0.0)).xyz;
-    float dist = length(wv);
-    float rayY = wv.y / max(dist, 0.0001);
-
-    float camH = cameraPosition.y - GROUNDFOG_BASE;
-    float b = GROUNDFOG_FALLOFF;
-    float by = b * rayY;
-
-    // analytic integral of exp(-b*height) along the view ray
-    float e = clamp(by * dist, -30.0, 30.0);
-    float integral = abs(by) > 0.0001 ? (1.0 - exp(-e)) / by : dist;
-    float optical = GROUNDFOG_DENSITY * exp(clamp(-b * camH, -20.0, 20.0)) * integral;
-
-    float amount = (1.0 - exp(-optical)) * w;
-    amount *= clamp((eyeBrightnessSmooth.y / 255. - 2. / 16.) * 4., 0.0, 1.0); // no fog in caves
-    amount *= (1.0 - rainStrength * 0.5);
-
-    // warm color, brighter when looking toward the sun
-    float sunDot = max(dot(normalize(fposView), sunVec), 0.0);
-    vec3 gfogC = fogC * GROUNDFOG_WARMTINT * (1.0 + 2.0 * pow(sunDot, 4.0)) * GROUNDFOG_BRIGHTNESS;
-
-    return mix(col, gfogC, clamp(amount, 0.0, 1.0));
-}
-
 void main() {
 #ifdef UNDERWATERFIX
 float mulfov = 1.0;
@@ -386,7 +339,7 @@ vec3 color = albedo.xyz;
 
         color = mix(color,reflection.rgb,fresnel);
     }
-    
+//odj
 if (land){
     float fog = FogF(fragpos.xyz);
     
@@ -401,9 +354,6 @@ if (land){
 
     if (isEyeInWater < 0.9) {
         color = mix(color, fogC, fog);
-        #ifdef GROUND_FOG
-        color = applyGroundFog(color, fragpos.xyz, fogC);
-        #endif
     } else {
         color = mix(color * 0.4, vec3(0.25, 0.5, 0.72) * rawAvg * 0.07, 1.0 - exp(-length(fragpos.xyz) / 40.0));
     }
